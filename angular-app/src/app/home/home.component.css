@@ -1,0 +1,52 @@
+div.myborder{
+    border: 1px solid #DFDFDF;
+    border-radius: .25rem;
+}
+div.topborder{
+    border-top: 1px solid #DFDFDF;
+    border-radius: .25rem;
+}
+div.prof-img-back{
+    background-image:url("https://images.pexels.com/photos/813269/pexels-photo-813269.jpeg?cs=srgb&dl=astronomy-beautiful-constellations-813269.jpg&fm=jpg");
+    height: 210px;
+    background-size: cover;
+}
+.ng-valid[required], .ng-valid.required  {
+    border-left: 4px solid #42A948; /* green */
+}
+.ng-invalid:not(form)  {
+    border-left: 4px solid #d24240; /* red */
+}
+.ng-pristine:not(form){
+    border-left: 1px solid rgb(174, 174, 174);
+    border-radius: .25rem;
+}
+img.prof-img{
+    height: 209px;
+    width: auto;
+}
+
+div.white-back{
+    background-color: white;
+}
+div.img-post{
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF; 
+    height: 320px;
+}
+div.imgpreview{
+    height: 300px;
+}
+img.img-posted{
+    height: 100%;
+    width: 100%
+}
+
+img.rec-photo{
+    height: 100%;
+    width: 100%
+}
+p.word-break{
+    word-wrap: break-word;
+}
+

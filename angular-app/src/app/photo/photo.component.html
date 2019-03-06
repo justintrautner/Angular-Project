@@ -1,0 +1,107 @@
+<nav *ngIf="dbUser" class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
+  <a class="navbar-brand cookie">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Google_Camera_Icon.svg/2000px-Google_Camera_Icon.svg.png"
+      width="30" height="30" class="d-inline-block align-top mr-1" alt="">
+    AngularGram
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/home']">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/profile',dbUser.id]">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/messages']">Messages<span class="badge badge-light ml-1">{{unread}}</span></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" (ngSubmit)="searchUsers()" #searchForm="ngForm">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search users" name="name" [(ngModel)]="search.name"
+        required minlength="1">
+      <input class="btn btn-dark my-2 my-sm-0" type="submit" value="Search" [disabled]="!searchForm.form.valid">
+    </form>
+    <img placement="auto" [ngbPopover]="popContent" popoverTitle="Settings" height="30" width="30" class="ml-1 mr-5 c-pointer seticon"
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Windows_Settings_app_icon.png">
+    <ng-template #popContent>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action c-pointer" [routerLink]="['/edit']">Edit Profile</li>
+        <li class="list-group-item list-group-item-action c-pointer" (click)="logout()">Logout</li>
+      </ul>
+    </ng-template>
+  </div>
+</nav>
+<div class="container" *ngIf="dbUser">
+  <div class="row pt-5 pb-5"></div>
+  <div class="row">
+    <div class="col-12 col-md-8 mb-2">
+      <div class="text-center">
+        <img class="img-fluid" id="photo" src={{photo.url}} alt="">
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="side-box mb-2">
+        <div class="uploader-box border-bottom pt-2 pb-2 pl-2">
+          <img height="30" width="30" class="rounded" src="{{photo['uploader']['avatar_url']}}" [routerLink]="['/profile',photo['uploader']['id']]" />
+          <p [routerLink]="['/profile',photo['uploader']['id']]" class="d-inline ml-1 c-pointer">{{photo['uploader']['username']
+            | titlecase}}</p>
+          <p class="d-inline ml-4 small"> {{photo['createdAt'] | date:'MMMM d, y'}}</p>
+          <p class="mb-0 text-muted small">{{photo['uploader']['first_name']}} {{photo['uploader']['last_name']}}</p>
+        </div>
+        <div class="pt-2 pl-2 row">
+          <div class="col-6">
+            <div class="text-center">
+              <span *ngIf="!isLiked" (click)="likePhoto()">
+                <img width="24" height="24" src="https://image.flaticon.com/icons/svg/149/149217.svg" alt="Not found" />
+              </span>
+              <span *ngIf="isLiked" (click)="unlikePhoto()">
+                <img width="24" height="24" src="https://image.flaticon.com/icons/svg/148/148836.svg" alt="Not found" />
+              </span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-center">
+              <img (click)="openBox()" src="https://image.flaticon.com/icons/svg/54/54761.svg" width="30" height="25"
+                alt="">
+            </div>
+          </div>
+        </div>
+        <div class="border-bottom pt-1 pl-2 row mb-2">
+          <div class="col-6 text-center">
+            <p *ngIf="photo.num_of_likes!=1" class="text-muted small mb-1">{{photo.num_of_likes}} Likes</p>
+            <p *ngIf="photo.num_of_likes==1" class="text-muted small mb-1">{{photo.num_of_likes}} Like</p>
+          </div>
+          <div class="col-6 text-center">
+            <p *ngIf="photo.num_of_comments!=1" class="text-muted small mb-1">{{photo.num_of_comments}} Comments</p>
+            <p *ngIf="photo.num_of_comments==1" class="text-muted small mb-1">{{photo.num_of_comments}} Comment</p>
+          </div>
+        </div>
+        <div *ngIf="openComment">
+          <div class="form-group text-right mb-1">
+            <form (ngSubmit)="addComment()" #comForm="ngForm">
+              <textarea class="form-control mb-1" required minlength="1" name="content" [(ngModel)]="comment.content"></textarea>
+              <input type="submit" value="Submit" class="btn btn-outline-info mr-1" [disabled]="!comForm.form.valid">
+              <input (click)="closeBox()" type="submit" value="Cancel" class="btn btn-outline-danger ml-1">
+            </form>
+          </div>
+        </div>
+        <div *ngFor="let comment of photo.photo_comments" class="border-bottom pt-2 pb-2 pl-2">
+          <div>
+            <img src={{comment.commenter.avatar_url}} alt="" height="30" width="30" class="rounded">
+            <p [routerLink]="['/profile', comment.commenter.id]" class="mb-0 ml-1 d-inline text-info c-pointer">{{comment.commenter.first_name}}
+              {{comment.commenter.last_name}}</p>
+            <span *ngIf="comment.commenter.id==dbUser.id" class="float-right mr-1"><img (click)="deleteComment(comment.id)" src="https://cdn4.iconfinder.com/data/icons/email-2-2/32/Trash-Email-Bin-512.png" class="trash-icon c-pointer"/></span>
+          </div>
+          <div>
+            <p class="mb-0 word-break">{{comment.content}}</p>
+            <p class="mb-0 text-muted small">{{comment.createdAt | date:'MMMM d, y'}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

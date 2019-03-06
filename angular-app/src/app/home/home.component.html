@@ -1,0 +1,212 @@
+<nav *ngIf="dbUser" class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
+  <a class="navbar-brand cookie">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Google_Camera_Icon.svg/2000px-Google_Camera_Icon.svg.png"
+      width="30" height="30" class="d-inline-block align-top mr-1" alt="">
+    AngularGram
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/profile',dbUser.id]">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/messages']">Messages<span class="badge badge-light ml-1">{{unread}}</span></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" (ngSubmit)="searchUsers()" #searchForm="ngForm">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search users" name="name" [(ngModel)]="search.name"
+        required minlength="1">
+      <input class="btn btn-dark my-2 my-sm-0" type="submit" value="Search" [disabled]="!searchForm.form.valid">
+    </form>
+    <img placement="auto" [ngbPopover]="popContent" popoverTitle="Settings" height="30" width="30" class="ml-1 mr-5 c-pointer seticon"
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Windows_Settings_app_icon.png">
+    <ng-template #popContent>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action c-pointer" [routerLink]="['/edit']">Edit Profile</li>
+        <li class="list-group-item list-group-item-action c-pointer" (click)="logout()">Logout</li>
+      </ul>
+    </ng-template>
+  </div>
+</nav>
+<div class="container" *ngIf="dbUser">
+  <div class="row pt-5 pb-5"></div>
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="myborder mb-3">
+        <div class="prof-img-back myborder text-center">
+          <img class="prof-img myborder rounded img-thumbnail" src={{dbUser.avatar_url}}>
+        </div>
+        <div class="white-back text-center">
+          <h5 class="pt-1">{{dbUser.username}}</h5>
+          <p class="font-weight-light">{{dbUser.description}}</p>
+          <div class="followers">
+            <p class="font-weight-light d-inline-block pr-3 mb-0 c-pointer" (click)="openFollowers(followers)">
+              Followers
+            </p>
+            <p class="font-weight-light d-inline-block mb-0 c-pointer" (click)="openFollowing(following)">
+              Following
+            </p>
+          </div>
+          <div class="number-of-follows">
+            <p class="d-inline-block pr-5">
+              {{dbUser.followed.length}}
+            </p>
+            <p class="d-inline-block pl-4">
+              {{dbUser.follower.length}}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="myborder text-left white-back pt-1 mb-3">
+        <h6 class="pl-2 d-inline-block">About</h6>
+        <a class="font-weight-light small d-inline-block ml-1 c-pointer" (click)="openEdit(edit)">Edit</a>
+        <p class="font-weight-light small pl-2">Lives in <span class="font-weight-normal">{{dbUser.livesIn}}</span></p>
+        <p class="font-weight-light small pl-2">From <span class="font-weight-normal">{{dbUser.from}}</span></p>
+      </div>
+      
+    </div>
+    <div class="col-md-6">
+      <div class="myborder white-back mb-3 pl-2 pr-2 pt-3">
+        <div class="form-group">
+          <input *ngIf="openPost==false" type="submit" class="btn btn-outline-info btn-lg btn-block" value="Upload Image"
+            (click)="openPreview()">
+          <input *ngIf="openPost==true" type="submit" class="btn btn-outline-danger btn-lg btn-block" value="Cancel"
+            (click)="closePreview()">
+        </div>
+      </div>
+      <div *ngIf="openPost==true" class="myborder white-back mb-3 pt-3 pl-1 pr-1">
+        <form (ngSubmit)="postPicture()" #postForm="ngForm">
+          <div class="form-group">
+            <input type="text" class="form-control" [(ngModel)]="imgPost.url" name="url" placeholder="url" required>
+          </div>
+          <div *ngIf="imgPost.url?.length >0" class="imgpreview">
+            <img src={{imgPost.url}} class="img-posted" alt="Image not found">
+          </div>
+          <div class="form-group mt-2">
+            <input type="text" class="form-control" [(ngModel)]="imgPost.caption" name="caption" placeholder="caption"
+              maxlength="255">
+          </div>
+          <input type="submit" [disabled]="!postForm.form.valid" class="btn btn-outline-info mb-2 btn-block btn-lg"
+            value="Submit">
+        </form>
+      </div>
+      <ngb-alert *ngIf="failedAlert" class="alert alert-danger p-2 mt-2" [dismissible]="false" (close)="failedAlert = true"><strong>{{failedMsg}}</strong></ngb-alert>
+      <div *ngFor="let photo of photos" class="mb-3">
+        <div class="myborder white-back">
+          <img class="c-pointer" src={{photo.uploader.avatar_url}} [routerLink]="['/profile', photo.uploader.id]"
+            height="30" width="30" alt="" class="m-1">
+          <h6 class="text-left d-inline pt-2">{{photo.uploader.username}}</h6>
+          <p class="d-inline float-right mb-0 mt-0 pt-2 mr-1">{{photo.createdAt | date:'MMMM d h:mm a' }}</p>
+        </div>
+        <div class="img-post" [routerLink]="['/photo',photo.id]">
+          <img class="img-posted" src={{photo.url}} alt="Image not found">
+        </div>
+        <div class="myborder pl-3 font-weight-light pt-1 white-back">
+          <p class="mb-2 word-break">{{photo.caption}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="recent-photos myborder white-back pt-1 mb-3">
+        <h6 class="pl-2 d-inline-block">Recent Photos</h6>
+        <div class="row d-flex align-items-center">
+          <div class="col-6 pr-0" *ngIf="rec_photos[0]">
+            <div class="p-2">
+              <img [routerLink]="['/photo',rec_photos[0].id]" src={{rec_photos[0].url}} class="rec-photo">
+            </div>
+          </div>
+          <div class="col-6 pl-0" *ngIf="rec_photos[1]">
+            <div class="p-2">
+              <img [routerLink]="['/photo',rec_photos[1].id]" src={{rec_photos[1].url}} class="rec-photo">
+            </div>
+          </div>
+        </div>
+        <div class="row d-flex align-items-center">
+          <div class="col-6 pr-0" *ngIf="rec_photos[2]">
+            <div class="p-2">
+              <img [routerLink]="['/photo',rec_photos[2].id]" src={{rec_photos[2].url}} class="rec-photo">
+            </div>
+          </div>
+          <div class="col-6 pl-0" *ngIf="rec_photos[3]">
+            <div class="p-2">
+              <img [routerLink]="['/photo',rec_photos[3].id]" src={{rec_photos[3].url}} class="rec-photo">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FOLLOWERS MODAL -->
+  <ng-template #followers let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Followers</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div *ngFor="let user of dbUser['followed']" class="myborder pt-1 pb-1 pl-1 mb-1">
+        <div [routerLink]="['/profile',user.id]" (click)="modal.dismiss('Cross click')">
+          <img height="40" width="40" src={{user.avatar_url}}>
+          <p class="d-inline ml-1">{{user.username}}</p>
+          <p class="text-muted small mb-0">{{user.first_name}} {{user.last_name}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
+  <!-- FOLLOWING MODAL -->
+  <ng-template #following let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Following</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div *ngFor="let user of dbUser['follower']" class="myborder pt-1 pb-1 pl-1 mb-1">
+        <div [routerLink]="['/profile',user.id]" (click)="modal.dismiss('Cross click')">
+          <img height="40" width="40" src={{user.avatar_url}}>
+          <p class="d-inline ml-1">{{user.username}}</p>
+          <p class="text-muted small mb-0">{{user.first_name}} {{user.last_name}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
+  <!-- EDIT MODAL -->
+  <ng-template #edit let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">
+        Edit
+      </h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <form (ngSubmit)="editAbout()" #editForm="ngForm">
+      <div class="modal-body">
+        <label>Lives in:</label>
+        <input type="text" class="form-control form-group" name="livesIn" [(ngModel)]="about.livesIn" required
+          minlength="2" pattern="^[a-zA-Z\s]+$">
+        <label>From:</label>
+        <input type="text" class="form-control form-group" name="from" [(ngModel)]="about.from" required minlength="2"
+          pattern="^[a-zA-Z\s]+$">
+      </div>
+      <div class="modal-footer">
+        <input type="submit" class="btn btn-info" value="Submit" [disabled]="!editForm.form.valid">
+      </div>
+    </form>
+  </ng-template>
+</div>

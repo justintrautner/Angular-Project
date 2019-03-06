@@ -1,0 +1,30 @@
+<div class="container">
+  <h2 class="cookie text-center header">AngularGram</h2>
+  <div class="d-flex row justify-content-center h-100 ml-0 mr-0">
+    <div class="card mx-auto white-back">
+      <div class="card-header">
+        <h3>Sign in</h3>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+          <div class="form-group">
+            <input type="text" class="form-control mt-2" placeholder="email" [(ngModel)]="user.email" name="email"
+              required email pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+            <input type="password" class="form-control mt-2" placeholder="password" [(ngModel)]="user.password" name="password"
+              required minlength="8">
+            <ngb-alert *ngIf="staticAlertClosed" class="alert alert-danger p-2 mt-2" [dismissible]="false" (close)="staticAlertClosed = true">Invalid
+              Credentials</ngb-alert>
+          </div>
+          <button type="submit" [disabled]="!loginForm.form.valid" class="btn btn-primary btn-block">Log in</button>
+        </form>
+        <h6 class="text-center mt-2">OR</h6>
+        <button (click)="signInWithFB()" type="submit" class="btn btn-primary btn-block fb-btn">Log in with Facebook</button>
+      </div>
+      <div class="card-footer pt-0 pb-0">
+        <p class="font-weight-light text-center mb-0">Don't have an account?<span [routerLink]="['/register']" class="text-primary c-pointer"> Sign
+            Up</span></p>
+        <p class="font-weight-light text-center mb-0 mt-0 small c-pointer" [routerLink]="['/forgot']">Forgot Password?</p>
+      </div>
+    </div>
+  </div>
+</div>

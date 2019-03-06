@@ -1,0 +1,106 @@
+<nav *ngIf="dbUser" class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
+  <a class="navbar-brand cookie">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Google_Camera_Icon.svg/2000px-Google_Camera_Icon.svg.png"
+      width="30" height="30" class="d-inline-block align-top mr-1" alt="">
+    AngularGram
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" [routerLink]="['/home']">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/profile',dbUser.id]">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/messages']">Messages<span class="badge badge-light ml-1">{{unread}}</span></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search users">
+      <input class="btn btn-dark my-2 my-sm-0" type="submit" value="Search">
+    </form>
+    <img placement="auto" [ngbPopover]="popContent" popoverTitle="Settings" height="30" width="30" class="ml-1 mr-5 c-pointer seticon"
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Windows_Settings_app_icon.png">
+    <ng-template #popContent>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action">Edit Profile</li>
+        <li class="list-group-item list-group-item-action c-pointer" (click)="logout()">Logout</li>
+      </ul>
+    </ng-template>
+  </div>
+</nav>
+<div class="container" *ngIf="dbUser">
+  <div class="row pt-5 pb-5"></div>
+  <div class="row mb-3">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="myborder white-back">
+          <div class="card-body">
+            <form (ngSubmit)="updateUser()" #editForm="ngForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="firstName">First Name</label>
+                  <input type="text" class="form-control" name="first_name" [(ngModel)]="edit.first_name" required minlength="1" pattern="^[a-zA-Z]+$">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" class="form-control" name="last_name" [(ngModel)]="edit.last_name" required minlength="1" pattern="^[a-zA-Z]+$">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" [(ngModel)]="edit.username" required minlength="2">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="username">Description</label>
+                <textarea class="form-control" rows="3" name="description" [(ngModel)]="edit.description"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="profilePicture">Profile Picture</label>
+                <input type="text" class="form-control" name="avatar_url" [(ngModel)]="edit.avatar_url">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="coverPhoto">Cover Photo</label>
+                <input type="text" class="form-control" name="cover_photo_url" [(ngModel)]="edit.cover_photo_url">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="livesIn">Lives In</label>
+                  <input type="text" class="form-control" name="livesIn" [(ngModel)]="edit.livesIn" required minlength="2" maxlength="20" pattern="^[a-zA-Z\s]+$">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="from">From</label>
+                  <input type="text" class="form-control" name="from" [(ngModel)]="edit.from" required minlength="2" maxlength="20" pattern="^[a-zA-Z\s]+$">
+                </div>
+              </div>
+            </div>
+            <input type="submit" class="btn btn-info btn-block" value="Submit Changes" [disabled]="!editForm.form.valid">
+            </form>
+            <ngb-alert *ngIf="staticAlertClosed" class="alert alert-success p-2 mt-2" [dismissible]="false" (close)="staticAlertClosed = true"><strong>Success!</strong></ngb-alert>
+            <ngb-alert *ngIf="failedAlert" class="alert alert-danger p-2 mt-2" [dismissible]="false" (close)="failedAlert = true"><strong>{{failedMsg}}</strong></ngb-alert>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>

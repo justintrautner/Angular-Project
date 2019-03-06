@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="d-flex row justify-content-center h-100 ml-0 mr-0">
+    <div class="card mx-auto white-back mt-4">
+      <div class="card-header">
+        <h3>Register</h3>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="onRegister()" #regForm="ngForm">
+          <div class="form-group">
+            <input type="text" class="form-control mt-2" placeholder="email" name="email" [(ngModel)]="user.email" required email pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+            <input type="text" class="form-control mt-2" placeholder="username" name="username" [(ngModel)]="user.username" required minlength="2" maxlength="16">
+            <input type="text" class="form-control mt-2" placeholder="first name" name="first_name" [(ngModel)]="user.first_name" required minlength="2" maxlength="16" pattern="^[a-zA-Z]+$">
+            <input type="text" class="form-control mt-2" placeholder="last name" name="last_name" [(ngModel)]="user.last_name" required minlength="2" maxlength="16" pattern="^[a-zA-Z]+$">
+            <input type="password" class="form-control mt-2" placeholder="password" name="password" [(ngModel)]="user.password" required minlength="8" maxlength="20">
+            <ngb-alert *ngIf="staticAlertClosed" class="alert alert-danger p-2 mt-2" [dismissible]="false" (close)="staticAlertClosed = true">{{errorMsg}}</ngb-alert>
+          </div>
+          <input type="submit" [disabled]="!regForm.form.valid" class="btn btn-primary btn-block" value="Sign Up">
+        </form>
+        <h6 class="text-center mt-2">OR</h6>
+        <button (click)="signInWithFB()" type="submit"class="btn btn-primary btn-block fb-btn">Log in with Facebook</button>
+      </div>
+      <div class="card-footer pt-0 pb-0">
+          <p class="font-weight-light text-center mt-1">Have an account?<span [routerLink]="['/']" class="text-primary c-pointer">Log in</span></p>
+        </div>
+    </div>
+  </div>
+</div>

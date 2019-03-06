@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="d-flex row justify-content-center h-100 ml-0 mr-0 mt-5">
+    <div class="card mx-auto white-back">
+      <div class="card-header">
+        <h3>Forgot Password?</h3>
+      </div>
+      <div class="card-body">
+        <p>Enter your email address and we'll send you a link to reset your password.</p>
+        <form (ngSubmit)="sendReset()" #resetForm="ngForm">
+          <div class="form-group">
+            <input type="text" class="form-control" name="email" [(ngModel)]="reset.email" required email pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+            <ngb-alert *ngIf="invalidAlert" class="alert alert-danger p-2 mt-2" [dismissible]="false" (close)="invalidAlert = true"><strong>Invalid Credentials</strong></ngb-alert>
+            <ngb-alert *ngIf="validAlert" class="alert alert-success p-2 mt-2" [dismissible]="false" (close)="validAlert = true"><strong>An email has been sent with further instructions</strong></ngb-alert>
+          </div>
+          <div class="text-right">
+            <input type="submit" class="btn btn-outline-info" [disabled]="!resetForm.form.valid">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

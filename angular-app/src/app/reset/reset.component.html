@@ -1,0 +1,37 @@
+<div class="container" *ngIf="tokenId">
+  <div class="d-flex row justify-content-center h-100 ml-0 mr-0 mt-5">
+    <div class="card mx-auto white-back">
+      <div class="card-header pl-5 pr-5">
+        <h3 class="ml-5 mr-5">Reset Password</h3>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="resetPassword()" #resetForm="ngForm">
+          <div class="form-group">
+            <label for="password">New password:</label>
+            <input type="text" class="form-control" name="password" required minlength="8" [(ngModel)]="reset.password">
+            <label for="c_password">Confirm Password:</label>
+            <input type="text" class="form-control" name="c_password" required minlength="8" [(ngModel)]="reset.c_password">
+            <ngb-alert *ngIf="changed" class="alert alert-success p-2 mt-2 c-pointer" [dismissible]="false" [routerLink]="['/']">
+                <h3>Succesfully changed Password.</h3>
+                <p>Click here to be redirect to login</p>
+              </ngb-alert>
+              <ngb-alert *ngIf="mismatch" class="alert alert-danger p-2 mt-2" [dismissible]="false">
+                <p class="m-0"><strong>Passwords do not match</strong></p>
+              </ngb-alert>
+          </div>
+          <div class="text-right">
+            <input type="submit" class="btn btn-outline-info" [disabled]="!resetForm.form.valid">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" *ngIf="invalidToken">
+  <div class="d-flex row justify-content-center h-100 ml-0 mr-0 mt-5">
+    <ngb-alert class="alert alert-danger p-5" [dismissible]="false">
+      <h3>Invalid or expired token</h3>
+    </ngb-alert>
+  </div>
+</div>

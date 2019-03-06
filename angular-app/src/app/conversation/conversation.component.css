@@ -1,0 +1,26 @@
+div.mainmsg{
+    height: 430px;
+    background-color: white;
+    border-top: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF;
+    border-bottom: 1px solid #DFDFDF;
+    border-radius: 0 .25rem 0 0;
+    overflow-y: scroll;
+}
+input.replymsg{
+    height: 45px;
+    border-radius:0 0 .25rem 0;
+    border-left: 0px;
+}
+div.sentchat{
+    background-color: #24A2B6;
+}
+div.recchat{
+    background-color: navajowhite;
+}
+p.word-break{
+    word-wrap: break-word;
+}
+input.sendbtn{
+    border-top-right-radius: 0;
+}

@@ -1,0 +1,30 @@
+div.cover-img{
+    background-image:url("https://images.pexels.com/photos/813269/pexels-photo-813269.jpeg?cs=srgb&dl=astronomy-beautiful-constellations-813269.jpg&fm=jpg");
+    min-height: 300px;
+    min-width: 100%;
+    background-size:cover; 
+    background-repeat: no-repeat;
+}
+.mytabs{
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF;
+    border-bottom: 1px solid #DFDFDF;
+    border-radius: 0px 0px .25rem .25rem;
+    background-color: white;
+}
+div.img-post{
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF; 
+    height: 250px;
+}
+img.img-posted{
+    height: 100%;
+    width: 100%
+}
+div.myborder{
+    border: 1px solid #DFDFDF;
+    border-radius: .25rem;
+}
+div.white-back{
+    background-color: white;
+}

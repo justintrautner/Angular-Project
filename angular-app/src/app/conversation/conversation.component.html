@@ -1,0 +1,39 @@
+<div *ngIf="dbUser">
+  <div class="mainmsg" #msgdiv [scrollTop]="msgdiv.scrollHeight">
+    <p></p>
+    <p *ngFor="let msg of openMsg">
+      <span *ngIf="dbUser.id==msg.senderId">
+        <div class="mr-2 d-flex flex-row-reverse">
+          <div class="d-inline sentchat rounded col-7 shadow-sm" [ngbTooltip]="sentContent">
+            <p class="d-inline mb-0 pr-1 pl-1 word-break">{{msg.content}}</p>
+            <ng-template #sentContent>
+              <p class="small mb-0">
+                Sent at {{msg.createdAt | date:'MMMM d h:mm a'}}
+              </p>
+            </ng-template>
+          </div>
+        </div>
+      </span>
+      <span *ngIf="dbUser.id==msg.recipientId">
+        <div class="ml-2 row">
+          <div class="d-inline recchat rounded col-7 shadow-sm" [ngbTooltip]="recContent">
+            <p class="d-inline mb-0 pr-1 pl-1 word-break">{{msg.content}}</p>
+            <ng-template #recContent>
+              <p class="small mb-0">
+                Received at {{msg.createdAt | date:'MMMM d h:mm a'}}
+              </p>
+            </ng-template>
+          </div>
+        </div>
+      </span>
+    </p>
+  </div>
+  <form (ngSubmit)="replyMsg(openMsg[0].convoId)" #replyForm="ngForm">
+    <div class="input-group">
+      <input type="text" class="form-control replymsg" name="content" [(ngModel)]="message.content" required minlength="1">
+      <div class="input-group-append">
+        <input type="submit" value="Send" class="btn btn-info sendbtn" [disabled]="!replyForm.form.valid">
+      </div>
+    </div>
+  </form>
+</div>

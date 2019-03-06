@@ -1,0 +1,111 @@
+<nav *ngIf="dbUser" class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
+  <a class="navbar-brand cookie">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Google_Camera_Icon.svg/2000px-Google_Camera_Icon.svg.png"
+      width="30" height="30" class="d-inline-block align-top mr-1" alt=""> AngularGram
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/home']">Home</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link">Profile<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/messages']">Messages<span class="badge badge-light ml-1">{{unread}}</span></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" (ngSubmit)="searchUsers()" #searchForm="ngForm">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search users" name="name" [(ngModel)]="search.name"
+        required minlength="1">
+      <input class="btn btn-dark my-2 my-sm-0" type="submit" value="Search" [disabled]="!searchForm.form.valid">
+    </form>
+    <img placement="auto" [ngbPopover]="popContent" popoverTitle="Settings" height="30" width="30" class="ml-1 mr-5 c-pointer"
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Windows_Settings_app_icon.png">
+    <ng-template #popContent>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action c-pointer" [routerLink]="['/edit']">Edit Profile</li>
+        <li class="list-group-item list-group-item-action c-pointer" (click)="logout()">Logout</li>
+      </ul>
+    </ng-template>
+  </div>
+</nav>
+<div class="container" *ngIf="profUser">
+  <div class="row pt-5 pb-5"></div>
+  <div class="row ml-0 mr-0 mb-1">
+    <div class="cover-img col-lg-12">
+      <img class="rounded mx-auto d-block mt-4 prof-pic" height="200" width="200" src="{{profUser.avatar_url}}" />
+      <h4 class="text-white text-center pt-3">{{profUser.username}}</h4>
+      <div *ngIf="profUser.id!=dbUser.id" ngbDropdown class="text-center">
+        <button class="btn btn-info mb-1" id="dropdownAction" ngbDropdownToggle>Actions</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownAction">
+          <button *ngIf="follows" class="dropdown-item" (click)="unFollowUser()">Unfollow</button>
+          <button *ngIf="!follows" class="dropdown-item" (click)="followUser()">Follow</button>
+          <button class="dropdown-item" (click)="openMsg(content)">Message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ngb-tabset>
+    <ngb-tab title="Photos">
+      <ng-template ngbTabContent>
+        <div class="row">
+          <div *ngFor="let photo of profUser.uploaded_photos" class="col-12 col-sm-6 col-lg-4" [routerLink]="['/photo',photo.id]">
+            <div class="myborder white-back mt-2">
+              <p class="mb-1 text-right mr-1 small">{{photo.createdAt | date:'MMMM d h:mm a'}}</p>
+            </div>
+            <div class="img-post">
+              <img src={{photo.url}} alt="Image not found" class="img-posted">
+            </div>
+            <div class="myborder white-back">
+              <p class="mb-1 ml-1">
+                {{photo.caption}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="About">
+      <ng-template ngbTabContent>
+        <div class="row mytabs mr-0 ml-0">
+          <div class="col-lg-4">
+            <h2> {{profUser.first_name}} {{profUser.last_name}}</h2>
+            <p>{{profUser.description}}</p>
+            <h6> <span class="font-weight-light">Lives in </span>{{profUser.livesIn}}</h6>
+            <h6> <span class="font-weight-light">From </span>{{profUser.from}}</h6>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+  <div class="row m-2"></div>
+</div>
+<div class="container" *ngIf="noUser">
+  <div class="row pt-5 pb-5"></div>
+  <h1 class="text-center text-danger bg-dark p-2"> User profile not found</h1>
+</div>
+<!-- MESSAGE MODAL -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <img height="30" width="30" src="{{profUser.avatar_url}}" />
+    <h4 class="ml-1">{{profUser.first_name}} {{profUser.last_name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form (ngSubmit)="sendMsg()" #msgForm="ngForm">
+    <div class="modal-body">
+      <textarea class="form-control" name="content" rows="3" [(ngModel)]="message.content" required minlength="1"></textarea>
+    </div>
+    <div class="modal-footer">
+      <input type="submit" class="btn btn-info" value="Send!" [disabled]="!msgForm.form.valid">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Cancel</button>
+    </div>
+  </form>
+</ng-template>

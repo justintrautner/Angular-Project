@@ -1,0 +1,77 @@
+<nav *ngIf="dbUser" class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
+  <a class="navbar-brand cookie">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Google_Camera_Icon.svg/2000px-Google_Camera_Icon.svg.png"
+      width="30" height="30" class="d-inline-block align-top mr-1" alt="">
+    AngularGram
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" [routerLink]="['/home']">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/profile',dbUser.id]">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/messages']">Messages<span class="badge badge-light ml-1">{{unread}}</span></a>
+      </li>
+    </ul>
+    <img placement="auto" [ngbPopover]="popContent" popoverTitle="Settings" height="30" width="30" class="ml-1 mr-5 c-pointer seticon"
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Windows_Settings_app_icon.png">
+    <ng-template #popContent>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action c-pointer" [routerLink]="['/edit']">Edit Profile</li>
+        <li class="list-group-item list-group-item-action c-pointer" (click)="logout()">Logout</li>
+      </ul>
+    </ng-template>
+  </div>
+</nav>
+<!-- CONTAINER -->
+<div class="container" *ngIf="dbUser">
+  <div class="row pt-5 pb-5"></div>
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div class="card mx-auto">
+        <div class="card-header text-center">
+          <h1 *ngIf="results.length>1"> {{results.length}} users found!</h1>
+          <h1 *ngIf="results.length==1"> {{results.length}} user found!</h1>
+          <h1 *ngIf="results.length==0"> No users found</h1>
+        </div>
+        <div class="card-body pt-2">
+          <form class="m-1" (ngSubmit)="searchUsers()" #searchForm="ngForm">
+            <div class="form-row">
+              <div class="form-group col-10">
+                <input class="form-control" type="search" placeholder="Search again" name="name" [(ngModel)]="search.name" required minlength="1">
+              </div>
+              <div class="form-group col-2">
+                <input class="form-control btn btn-dark" type="submit" value="Search" [disabled]="!searchForm.form.valid">
+              </div>
+            </div>
+          </form>
+          <div *ngFor="let user of results" class="border-bottom pt-1 pb-1 pl-1 mb-1 row" [routerLink]="['/profile', user.id]">
+            <div class="col-2">
+              <img height="50" width="50" src={{user.avatar_url}}>
+            </div>
+            <div class="col-6">
+              <p class="mb-1 font-weight-bold">{{user.username}}</p>
+              <p class="mb-1 small"> Lives in: <span class="font-weight-light">{{user.livesIn}}</span></p>
+            </div>
+            <div class="col-4 text-center">
+              <p class="mb-1">Followers</p>
+              <p class="font-weight-bold mb-1">{{user.num_of_follows}}</p>
+            </div>
+            <div class="col-12">
+              <p class="text-muted small mb-0">{{user.first_name}} {{user.last_name}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+div.myborder{
+    border: 1px solid #DFDFDF;
+    border-radius: .25rem;
+}
+div.white-back{
+    background-color: white;
+}
+
+.ng-valid[required], .ng-valid.required  {
+    border-left: 4px solid #42A948; /* green */
+}
+.ng-invalid:not(form)  {
+    border-left: 4px solid #d24240; /* red */
+}
+.ng-pristine:not(form){
+    border-left: 1px solid rgb(174, 174, 174);
+    border-radius: .25rem;
+}
